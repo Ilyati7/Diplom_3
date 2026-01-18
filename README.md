@@ -127,31 +127,58 @@ Behaviors - группировка по функциональности
 text
 src/test/java/com/burgerautotest/
 ├── models/                    # Модели данных
+
 │   ├── AuthData.java         # Данные для авторизации
+
 │   └── UserData.java         # Данные пользователя
+
 ├── pages/                    # Page Object классы
+
 │   ├── BasePage.java         # Базовый класс страницы
+
 │   ├── LoginPage.java        # Страница входа
+
 │   ├── RegistrationPage.java # Страница регистрации
+
 │   ├── MainPage.java         # Главная страница
+
 │   └── ForgotPasswordPage.java # Страница восстановления пароля
+
 ├── tests/                    # Тестовые классы
+
 │   ├── BaseTest.java         # Базовый тестовый класс
+
 │   ├── LoginTests.java       # Тесты авторизации
+
 │   ├── RegistrationTests.java # Тесты регистрации
+
 │   └── ConstructorTests.java # Тесты конструктора
+
 └── utils/                    # Вспомогательные классы
+
     ├── ApiClient.java        # Клиент для API запросов
+    
     ├── ConfigReader.java     # Чтение конфигурации
+    
     ├── TestDataGenerator.java # Генерация тестовых данных
+    
     └── WebDriverFactory.java # Фабрика WebDriver
 
+
+
 docs/
+
 ├── images/                   # Скриншоты отчетов
+
 │   ├── allure-overview.png
+
 │   ├── allure-suites.png
+
 │   └── allure-graphs.png
+
 └── allure-report/            # Полный HTML отчет
+
+
 
 target/
 ├── allure-results/           # Сырые данные Allure

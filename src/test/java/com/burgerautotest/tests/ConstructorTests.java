@@ -15,29 +15,31 @@ public class ConstructorTests extends BaseTest {
     public void testNavigateToBunsSection() {
         System.out.println("Тест: переход к разделу 'Булки'");
 
-        try {
-            driver.get(baseUrl);
-            MainPage mainPage = new MainPage(driver);
-            mainPage.waitForLoad();
+        driver.get(baseUrl);
+        MainPage mainPage = new MainPage(driver);
+        mainPage.waitForLoad();
 
-            // Переходим на другую секцию, чтобы потом вернуться к булкам
-            mainPage.clickSaucesTab();
-            Thread.sleep(1000);
+        // Проверяем, что изначально отображается раздел "Булки"
+        assertTrue("Изначально должен отображаться раздел 'Булки'",
+                mainPage.isBunsSectionDisplayed());
 
-            // Возвращаемся к булкам
-            mainPage.clickBunsTab();
-            Thread.sleep(1000);
+        // Переходим на другую секцию, чтобы потом вернуться к булкам
+        mainPage.clickSaucesTab();
+        mainPage.waitForSaucesSectionDisplayed();
 
-            // Проверяем, что активна секция булок
-            assertTrue("Секция 'Булки' должна быть активна",
-                    mainPage.isBunsSectionActive());
+        // Проверяем, что теперь отображаются соусы
+        assertTrue("После клика на 'Соусы' должен отображаться раздел 'Соусы'",
+                mainPage.isSaucesSectionDisplayed());
 
-            System.out.println("✅ Переход к разделу 'Булки' успешен");
+        // Возвращаемся к булкам
+        mainPage.clickBunsTab();
+        mainPage.waitForBunsSectionDisplayed();
 
-        } catch (Exception e) {
-            System.out.println("❌ Ошибка при переходе к разделу 'Булки': " + e.getMessage());
-            throw new AssertionError("Тест не прошел: " + e.getMessage());
-        }
+        // Проверяем, что снова отображаются булки
+        assertTrue("После клика на 'Булки' должен отображаться раздел 'Булки'",
+                mainPage.isBunsSectionDisplayed());
+
+        System.out.println("✅ Переход к разделу 'Булки' успешен");
     }
 
     @Test
@@ -46,25 +48,19 @@ public class ConstructorTests extends BaseTest {
     public void testNavigateToSaucesSection() {
         System.out.println("Тест: переход к разделу 'Соусы'");
 
-        try {
-            driver.get(baseUrl);
-            MainPage mainPage = new MainPage(driver);
-            mainPage.waitForLoad();
+        driver.get(baseUrl);
+        MainPage mainPage = new MainPage(driver);
+        mainPage.waitForLoad();
 
-            // Переходим к соусам
-            mainPage.clickSaucesTab();
-            Thread.sleep(1000);
+        // Переходим к соусам
+        mainPage.clickSaucesTab();
+        mainPage.waitForSaucesSectionDisplayed();
 
-            // Проверяем, что активна секция соусов
-            assertTrue("Секция 'Соусы' должна быть активна",
-                    mainPage.isSaucesSectionActive());
+        // Проверяем, что отображается раздел соусов
+        assertTrue("После клика на 'Соусы' должен отображаться раздел 'Соусы'",
+                mainPage.isSaucesSectionDisplayed());
 
-            System.out.println("✅ Переход к разделу 'Соусы' успешен");
-
-        } catch (Exception e) {
-            System.out.println("❌ Ошибка при переходе к разделу 'Соусы': " + e.getMessage());
-            throw new AssertionError("Тест не прошел: " + e.getMessage());
-        }
+        System.out.println("✅ Переход к разделу 'Соусы' успешен");
     }
 
     @Test
@@ -73,24 +69,18 @@ public class ConstructorTests extends BaseTest {
     public void testNavigateToFillingsSection() {
         System.out.println("Тест: переход к разделу 'Начинки'");
 
-        try {
-            driver.get(baseUrl);
-            MainPage mainPage = new MainPage(driver);
-            mainPage.waitForLoad();
+        driver.get(baseUrl);
+        MainPage mainPage = new MainPage(driver);
+        mainPage.waitForLoad();
 
-            // Переходим к начинкам
-            mainPage.clickFillingsTab();
-            Thread.sleep(1000);
+        // Переходим к начинкам
+        mainPage.clickFillingsTab();
+        mainPage.waitForFillingsSectionDisplayed();
 
-            // Проверяем, что активна секция начинок
-            assertTrue("Секция 'Начинки' должна быть активна",
-                    mainPage.isFillingsSectionActive());
+        // Проверяем, что отображается раздел начинок
+        assertTrue("После клика на 'Начинки' должен отображаться раздел 'Начинки'",
+                mainPage.isFillingsSectionDisplayed());
 
-            System.out.println("✅ Переход к разделу 'Начинки' успешен");
-
-        } catch (Exception e) {
-            System.out.println("❌ Ошибка при переходе к разделу 'Начинки': " + e.getMessage());
-            throw new AssertionError("Тест не прошел: " + e.getMessage());
-        }
+        System.out.println("✅ Переход к разделу 'Начинки' успешен");
     }
 }

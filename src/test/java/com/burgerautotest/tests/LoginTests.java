@@ -1,17 +1,56 @@
 package com.burgerautotest.tests;
 
+import com.burgerautotest.models.AuthData;
+import com.burgerautotest.models.UserData;
 import com.burgerautotest.pages.ForgotPasswordPage;
 import com.burgerautotest.pages.LoginPage;
 import com.burgerautotest.pages.MainPage;
 import com.burgerautotest.pages.RegistrationPage;
+import com.burgerautotest.utils.ApiClient;
 import com.burgerautotest.utils.TestDataGenerator;
 import io.qameta.allure.Description;
 import io.qameta.allure.junit4.DisplayName;
+import io.restassured.response.Response;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 @DisplayName("Тесты авторизации пользователя")
 public class LoginTests extends BaseTest {
+
+    private UserData testUser;
+    private String authToken;
+
+    @Before
+    public void setUpTestUser() {
+        // Создаем пользователя через API перед каждым тестом
+        testUser = new UserData(
+                TestDataGenerator.generateRandomEmail(),
+                TestDataGenerator.generateValidPassword(),
+                TestDataGenerator.generateRandomName()
+        );
+
+        Response registerResponse = ApiClient.registerUser(testUser);
+        System.out.println("Статус регистрации пользователя: " + registerResponse.getStatusCode());
+    }
+
+    @After
+    public void tearDownTestUser() {
+        // Логинимся, чтобы получить токен для удаления
+        AuthData authData = new AuthData(testUser.getEmail(), testUser.getPassword());
+        Response loginResponse = ApiClient.loginUser(authData);
+
+        if (loginResponse.getStatusCode() == 200) {
+            authToken = ApiClient.extractToken(loginResponse);
+            if (authToken != null) {
+                // Удаляем пользователя через API после каждого теста
+                Response deleteResponse = ApiClient.deleteUser(authToken);
+                System.out.println("Статус удаления пользователя: " +
+                        (deleteResponse != null ? deleteResponse.getStatusCode() : "не удалось удалить"));
+            }
+        }
+    }
 
     @Test
     @DisplayName("Вход через кнопку 'Войти в аккаунт' на главной странице")
@@ -19,43 +58,23 @@ public class LoginTests extends BaseTest {
     public void testLoginViaMainPageButton() {
         System.out.println("Тест: вход через кнопку на главной странице");
 
-        try {
-            // Создаем пользователя через UI
-            String email = TestDataGenerator.generateRandomEmail();
-            String password = TestDataGenerator.generateValidPassword();
-            String name = TestDataGenerator.generateRandomName();
+        // Вход через главную страницу
+        driver.get(baseUrl);
+        MainPage mainPage = new MainPage(driver);
+        mainPage.waitForLoad();
+        mainPage.clickLoginAccountButton();
 
-            // Регистрация нового пользователя
-            driver.get(baseUrl + "/register");
-            RegistrationPage registrationPage = new RegistrationPage(driver);
-            registrationPage.waitForLoad();
-            registrationPage.register(name, email, password);
+        // Вход
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.waitForLoad();
+        loginPage.login(testUser.getEmail(), testUser.getPassword());
 
-            // Ждем перехода на страницу входа
-            Thread.sleep(2000);
+        // Проверяем, что вернулись на главную страницу
+        mainPage.waitForLoad();
+        assertTrue("Должна отображаться главная страница после входа",
+                mainPage.isConstructorDisplayed());
 
-            // Вход через главную страницу
-            driver.get(baseUrl);
-            MainPage mainPage = new MainPage(driver);
-            mainPage.waitForLoad();
-            mainPage.clickLoginAccountButton();
-
-            // Вход
-            LoginPage loginPage = new LoginPage(driver);
-            loginPage.waitForLoad();
-            loginPage.login(email, password);
-
-            // Проверяем, что вернулись на главную страницу
-            Thread.sleep(2000);
-            assertTrue("Должна отображаться главная страница после входа",
-                    mainPage.isConstructorDisplayed());
-
-            System.out.println("✅ Вход через главную страницу успешен");
-
-        } catch (Exception e) {
-            System.out.println("❌ Ошибка при входе через главную страницу: " + e.getMessage());
-            throw new AssertionError("Тест не прошел: " + e.getMessage());
-        }
+        System.out.println("✅ Вход через главную страницу успешен");
     }
 
     @Test
@@ -64,43 +83,23 @@ public class LoginTests extends BaseTest {
     public void testLoginViaPersonalAccountButton() {
         System.out.println("Тест: вход через кнопку 'Личный кабинет'");
 
-        try {
-            // Создаем пользователя через UI
-            String email = TestDataGenerator.generateRandomEmail();
-            String password = TestDataGenerator.generateValidPassword();
-            String name = TestDataGenerator.generateRandomName();
+        // Вход через кнопку личного кабинета
+        driver.get(baseUrl);
+        MainPage mainPage = new MainPage(driver);
+        mainPage.waitForLoad();
+        mainPage.clickPersonalAccountButton();
 
-            // Регистрация нового пользователя
-            driver.get(baseUrl + "/register");
-            RegistrationPage registrationPage = new RegistrationPage(driver);
-            registrationPage.waitForLoad();
-            registrationPage.register(name, email, password);
+        // Вход
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.waitForLoad();
+        loginPage.login(testUser.getEmail(), testUser.getPassword());
 
-            // Ждем перехода на страницу входа
-            Thread.sleep(2000);
+        // Проверяем, что вернулись на главную страницу
+        mainPage.waitForLoad();
+        assertTrue("Должна отображаться главная страница после входа",
+                mainPage.isConstructorDisplayed());
 
-            // Вход через кнопку личного кабинета
-            driver.get(baseUrl);
-            MainPage mainPage = new MainPage(driver);
-            mainPage.waitForLoad();
-            mainPage.clickPersonalAccountButton();
-
-            // Вход
-            LoginPage loginPage = new LoginPage(driver);
-            loginPage.waitForLoad();
-            loginPage.login(email, password);
-
-            // Проверяем, что вернулись на главную страницу
-            Thread.sleep(2000);
-            assertTrue("Должна отображаться главная страница после входа",
-                    mainPage.isConstructorDisplayed());
-
-            System.out.println("✅ Вход через личный кабинет успешен");
-
-        } catch (Exception e) {
-            System.out.println("❌ Ошибка при входе через личный кабинет: " + e.getMessage());
-            throw new AssertionError("Тест не прошел: " + e.getMessage());
-        }
+        System.out.println("✅ Вход через личный кабинет успешен");
     }
 
     @Test
@@ -109,47 +108,27 @@ public class LoginTests extends BaseTest {
     public void testLoginViaRegistrationPage() {
         System.out.println("Тест: вход через страницу регистрации");
 
-        try {
-            // Создаем пользователя через UI
-            String email = TestDataGenerator.generateRandomEmail();
-            String password = TestDataGenerator.generateValidPassword();
-            String name = TestDataGenerator.generateRandomName();
+        // Переход на страницу входа через страницу регистрации
+        driver.get(baseUrl + "/register");
+        RegistrationPage registrationPage = new RegistrationPage(driver);
+        registrationPage.waitForLoad();
+        registrationPage.clickLoginLink();
 
-            // Регистрация нового пользователя
-            driver.get(baseUrl + "/register");
-            RegistrationPage registrationPage = new RegistrationPage(driver);
-            registrationPage.waitForLoad();
-            registrationPage.register(name, email, password);
+        // Проверяем, что перешли на страницу входа
+        LoginPage loginPage = new LoginPage(driver);
+        assertTrue("Должна отображаться страница входа",
+                loginPage.isLoginPage());
 
-            // Ждем перехода на страницу входа
-            Thread.sleep(2000);
+        // Выполняем вход
+        loginPage.login(testUser.getEmail(), testUser.getPassword());
 
-            // Переход на страницу входа через страницу регистрации
-            driver.get(baseUrl + "/register");
-            registrationPage = new RegistrationPage(driver);
-            registrationPage.waitForLoad();
-            registrationPage.clickLoginLink();
+        // Проверяем, что вернулись на главную страницу
+        MainPage mainPage = new MainPage(driver);
+        mainPage.waitForLoad();
+        assertTrue("Должна отображаться главная страница после входа",
+                mainPage.isConstructorDisplayed());
 
-            // Проверяем, что перешли на страницу входа
-            LoginPage loginPage = new LoginPage(driver);
-            assertTrue("Должна отображаться страница входа",
-                    loginPage.isLoginPage());
-
-            // Выполняем вход
-            loginPage.login(email, password);
-
-            // Проверяем, что вернулись на главную страницу
-            Thread.sleep(2000);
-            MainPage mainPage = new MainPage(driver);
-            assertTrue("Должна отображаться главная страница после входа",
-                    mainPage.isConstructorDisplayed());
-
-            System.out.println("✅ Вход через страницу регистрации успешен");
-
-        } catch (Exception e) {
-            System.out.println("❌ Ошибка при входе через страницу регистрации: " + e.getMessage());
-            throw new AssertionError("Тест не прошел: " + e.getMessage());
-        }
+        System.out.println("✅ Вход через страницу регистрации успешен");
     }
 
     @Test
@@ -158,46 +137,26 @@ public class LoginTests extends BaseTest {
     public void testLoginViaForgotPasswordPage() {
         System.out.println("Тест: вход через страницу восстановления пароля");
 
-        try {
-            // Создаем пользователя через UI
-            String email = TestDataGenerator.generateRandomEmail();
-            String password = TestDataGenerator.generateValidPassword();
-            String name = TestDataGenerator.generateRandomName();
+        // Переход на страницу восстановления пароля
+        driver.get(baseUrl + "/forgot-password");
+        ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage(driver);
+        forgotPasswordPage.waitForLoad();
+        forgotPasswordPage.clickLoginLink();
 
-            // Регистрация нового пользователя
-            driver.get(baseUrl + "/register");
-            RegistrationPage registrationPage = new RegistrationPage(driver);
-            registrationPage.waitForLoad();
-            registrationPage.register(name, email, password);
+        // Проверяем, что перешли на страницу входа
+        LoginPage loginPage = new LoginPage(driver);
+        assertTrue("Должна отображаться страница входа",
+                loginPage.isLoginPage());
 
-            // Ждем перехода на страницу входа
-            Thread.sleep(2000);
+        // Выполняем вход
+        loginPage.login(testUser.getEmail(), testUser.getPassword());
 
-            // Переход на страницу восстановления пароля
-            driver.get(baseUrl + "/forgot-password");
-            ForgotPasswordPage forgotPasswordPage = new ForgotPasswordPage(driver);
-            forgotPasswordPage.waitForLoad();
-            forgotPasswordPage.clickLoginLink();
+        // Проверяем, что вернулись на главную страницу
+        MainPage mainPage = new MainPage(driver);
+        mainPage.waitForLoad();
+        assertTrue("Должна отображаться главная страница после входа",
+                mainPage.isConstructorDisplayed());
 
-            // Проверяем, что перешли на страницу входа
-            LoginPage loginPage = new LoginPage(driver);
-            assertTrue("Должна отображаться страница входа",
-                    loginPage.isLoginPage());
-
-            // Выполняем вход
-            loginPage.login(email, password);
-
-            // Проверяем, что вернулись на главную страницу
-            Thread.sleep(2000);
-            MainPage mainPage = new MainPage(driver);
-            assertTrue("Должна отображаться главная страница после входа",
-                    mainPage.isConstructorDisplayed());
-
-            System.out.println("✅ Вход через страницу восстановления пароля успешен");
-
-        } catch (Exception e) {
-            System.out.println("❌ Ошибка при входе через страницу восстановления пароля: " + e.getMessage());
-            throw new AssertionError("Тест не прошел: " + e.getMessage());
-        }
+        System.out.println("✅ Вход через страницу восстановления пароля успешен");
     }
 }

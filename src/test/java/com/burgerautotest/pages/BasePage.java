@@ -1,5 +1,6 @@
 package com.burgerautotest.pages;
 
+import io.qameta.allure.Step;
 import org.openqa.selenium.*;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -14,6 +15,7 @@ public class BasePage {
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
+    @Step("Ожидание видимости элемента: {locator}")
     protected void waitForElementVisible(By locator) {
         try {
             wait.until(ExpectedConditions.visibilityOfElementLocated(locator));
@@ -23,6 +25,7 @@ public class BasePage {
         }
     }
 
+    @Step("Ожидание кликабельности элемента: {locator}")
     protected void waitForElementClickable(By locator) {
         try {
             wait.until(ExpectedConditions.elementToBeClickable(locator));
@@ -32,6 +35,7 @@ public class BasePage {
         }
     }
 
+    @Step("Клик по элементу: {locator}")
     protected void clickElement(By locator) {
         waitForElementClickable(locator);
         try {
@@ -43,6 +47,7 @@ public class BasePage {
         }
     }
 
+    @Step("Ввод текста '{text}' в элемент: {locator}")
     protected void enterText(By locator, String text) {
         waitForElementVisible(locator);
         WebElement element = driver.findElement(locator);
@@ -50,11 +55,13 @@ public class BasePage {
         element.sendKeys(text);
     }
 
+    @Step("Получение текста элемента: {locator}")
     protected String getElementText(By locator) {
         waitForElementVisible(locator);
         return driver.findElement(locator).getText();
     }
 
+    @Step("Проверка отображения элемента: {locator}")
     protected boolean isElementDisplayed(By locator) {
         try {
             waitForElementVisible(locator);

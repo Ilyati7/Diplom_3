@@ -38,5 +38,6 @@ build/
 ### Mac OS ###
 .DS_Store
 /.idea/
-/.idea/
 /.allure/
+/.allure/allure-2.20.1/
+/.allure/allure-2.24.0/

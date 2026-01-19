@@ -114,9 +114,9 @@ target/ ├── allure-results/ # Сырые данные Allure └── sur
 ✅ **9 тестов** успешно пройдены
 
 ### Скриншоты отчета:
-![Общая статистика](docs/images/allure-overview.png)
-![Список тестов](docs/images/allure-suites.png)
-![Графики успешности](docs/images/allure-graphs.png)
+![Общая статистика]
+![Список тестов]
+![Графики успешности]
 
 ### Полный отчет:
 [allure-report.zip](allure-report.zip) - скачайте и откройте `index.html`
@@ -124,6 +124,7 @@ target/ ├── allure-results/ # Сырые данные Allure └── sur
 ### Как сгенерировать локально:
 ```bash
 mvn clean test allure:serve
+
 
 
 

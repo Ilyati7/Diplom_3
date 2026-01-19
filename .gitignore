@@ -37,7 +37,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
-/.idea/
-/.allure/
-/.allure/allure-2.20.1/
-/.allure/allure-2.24.0/
+
+# Папки и файлы, которые нужно игнорировать
+.idea/
+.allure/

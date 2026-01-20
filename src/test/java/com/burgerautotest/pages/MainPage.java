@@ -2,23 +2,18 @@ package com.burgerautotest.pages;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
-import io.qameta.allure.Step;
 import org.openqa.selenium.support.ui.ExpectedConditions;
+import io.qameta.allure.Step;
 
 public class MainPage extends BasePage {
 
-    private By loginAccountButton = By.xpath("//button[contains(text(), 'Войти в аккаунт')]");
-    private By personalAccountButton = By.xpath("//a[contains(@href, 'account') or contains(text(), 'Личный Кабинет')]");
-    private By constructorTitle = By.xpath("//h1[contains(text(), 'Соберите бургер')]");
+    private final By loginAccountButton = By.xpath("//button[contains(text(), 'Войти в аккаунт')]");
+    private final By personalAccountButton = By.xpath("//a[contains(@href, 'account') or contains(text(), 'Личный Кабинет')]");
+    private final By constructorTitle = By.xpath("//h1[contains(text(), 'Соберите бургер')]");
 
-    private By bunsTab = By.xpath("//span[contains(text(), 'Булки')]/parent::div");
-    private By saucesTab = By.xpath("//span[contains(text(), 'Соусы')]/parent::div");
-    private By fillingsTab = By.xpath("//span[contains(text(), 'Начинки')]/parent::div");
-
-    private By bunsSection = By.xpath("//h2[contains(text(), 'Булки')]");
-    private By saucesSection = By.xpath("//h2[contains(text(), 'Соусы')]");
-    private By fillingsSection = By.xpath("//h2[contains(text(), 'Начинки')]");
+    private final By bunsTab = By.xpath("//span[contains(text(), 'Булки')]/parent::div");
+    private final By saucesTab = By.xpath("//span[contains(text(), 'Соусы')]/parent::div");
+    private final By fillingsTab = By.xpath("//span[contains(text(), 'Начинки')]/parent::div");
 
     public MainPage(WebDriver driver) {
         super(driver);
@@ -57,13 +52,9 @@ public class MainPage extends BasePage {
     @Step("Проверка активности раздела 'Булки'")
     public boolean isBunsSectionActive() {
         try {
-            // Проверяем наличие класса активности у родительского div
-            WebElement bunsElement = driver.findElement(bunsTab);
-            String className = bunsElement.getAttribute("class");
-            System.out.println("Класс элемента 'Булки': " + className);
-            return className.contains("current") || className.contains("active") || className.contains("tab_tab_type_current");
+            return driver.findElement(bunsTab).getAttribute("class").contains("current") ||
+                    driver.findElement(bunsTab).getAttribute("class").contains("active");
         } catch (Exception e) {
-            System.out.println("Ошибка при проверке активности 'Булки': " + e.getMessage());
             return false;
         }
     }
@@ -71,12 +62,9 @@ public class MainPage extends BasePage {
     @Step("Проверка активности раздела 'Соусы'")
     public boolean isSaucesSectionActive() {
         try {
-            WebElement saucesElement = driver.findElement(saucesTab);
-            String className = saucesElement.getAttribute("class");
-            System.out.println("Класс элемента 'Соусы': " + className);
-            return className.contains("current") || className.contains("active") || className.contains("tab_tab_type_current");
+            return driver.findElement(saucesTab).getAttribute("class").contains("current") ||
+                    driver.findElement(saucesTab).getAttribute("class").contains("active");
         } catch (Exception e) {
-            System.out.println("Ошибка при проверке активности 'Соусы': " + e.getMessage());
             return false;
         }
     }
@@ -84,48 +72,34 @@ public class MainPage extends BasePage {
     @Step("Проверка активности раздела 'Начинки'")
     public boolean isFillingsSectionActive() {
         try {
-            WebElement fillingsElement = driver.findElement(fillingsTab);
-            String className = fillingsElement.getAttribute("class");
-            System.out.println("Класс элемента 'Начинки': " + className);
-            return className.contains("current") || className.contains("active") || className.contains("tab_tab_type_current");
+            return driver.findElement(fillingsTab).getAttribute("class").contains("current") ||
+                    driver.findElement(fillingsTab).getAttribute("class").contains("active");
         } catch (Exception e) {
-            System.out.println("Ошибка при проверке активности 'Начинки': " + e.getMessage());
             return false;
         }
     }
 
-    @Step("Проверка отображения раздела 'Булки'")
-    public boolean isBunsSectionDisplayed() {
-        return isElementDisplayed(bunsSection);
-    }
-
-    @Step("Проверка отображения раздела 'Соусы'")
-    public boolean isSaucesSectionDisplayed() {
-        return isElementDisplayed(saucesSection);
-    }
-
-    @Step("Проверка отображения раздела 'Начинки'")
-    public boolean isFillingsSectionDisplayed() {
-        return isElementDisplayed(fillingsSection);
-    }
-
     @Step("Ожидание загрузки главной страницы")
     public void waitForLoad() {
-        waitForElementVisible(constructorTitle);
+        wait.until(ExpectedConditions.or(
+                ExpectedConditions.visibilityOfElementLocated(loginAccountButton),
+                ExpectedConditions.visibilityOfElementLocated(constructorTitle),
+                ExpectedConditions.visibilityOfElementLocated(bunsTab)
+        ));
     }
 
-    @Step("Ожидание отображения раздела 'Булки'")
-    public void waitForBunsSectionDisplayed() {
-        waitForElementVisible(bunsSection);
+    @Step("Ожидание активности раздела 'Булки'")
+    public void waitForBunsSectionActive() {
+        wait.until(driver -> isBunsSectionActive());
     }
 
-    @Step("Ожидание отображения раздела 'Соусы'")
-    public void waitForSaucesSectionDisplayed() {
-        waitForElementVisible(saucesSection);
+    @Step("Ожидание активности раздела 'Соусы'")
+    public void waitForSaucesSectionActive() {
+        wait.until(driver -> isSaucesSectionActive());
     }
 
-    @Step("Ожидание отображения раздела 'Начинки'")
-    public void waitForFillingsSectionDisplayed() {
-        waitForElementVisible(fillingsSection);
+    @Step("Ожидание активности раздела 'Начинки'")
+    public void waitForFillingsSectionActive() {
+        wait.until(driver -> isFillingsSectionActive());
     }
 }

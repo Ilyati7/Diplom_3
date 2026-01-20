@@ -2,7 +2,7 @@ package com.burgerautotest.utils;
 
 import com.burgerautotest.models.AuthData;
 import com.burgerautotest.models.UserData;
-import com.google.gson.Gson;
+import io.qameta.allure.Step;
 import io.restassured.RestAssured;
 import io.restassured.parsing.Parser;
 import io.restassured.response.Response;
@@ -10,35 +10,35 @@ import static io.restassured.RestAssured.given;
 
 public class ApiClient {
     private static final String BASE_URL = ConfigReader.getBaseUrl();
-    private static final Gson gson = new Gson();
 
     static {
         RestAssured.baseURI = BASE_URL;
         RestAssured.defaultParser = Parser.JSON;
     }
 
+    @Step("Регистрация пользователя через API")
     public static Response registerUser(UserData user) {
-        String json = gson.toJson(user);
-        System.out.println("Регистрация пользователя: " + json);
+        System.out.println("Регистрация пользователя: " + user);
 
         return given()
                 .header("Content-type", "application/json")
-                .body(json)
+                .body(user)  // ✅ RestAssured автоматически сериализует объект в JSON
                 .when()
                 .post("/api/auth/register");
     }
 
+    @Step("Авторизация пользователя через API")
     public static Response loginUser(AuthData authData) {
-        String json = gson.toJson(authData);
-        System.out.println("Авторизация: " + json);
+        System.out.println("Авторизация: " + authData);
 
         return given()
                 .header("Content-type", "application/json")
-                .body(json)
+                .body(authData)  // ✅ RestAssured автоматически сериализует объект в JSON
                 .when()
                 .post("/api/auth/login");
     }
 
+    @Step("Удаление пользователя через API")
     public static Response deleteUser(String token) {
         if (token == null || token.isEmpty()) {
             System.out.println("Токен пустой, удаление невозможно");
@@ -51,6 +51,7 @@ public class ApiClient {
                 .delete("/api/auth/user");
     }
 
+    @Step("Извлечение токена из ответа")
     public static String extractToken(Response response) {
         try {
             if (response.getStatusCode() == 200) {

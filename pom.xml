@@ -55,6 +55,14 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- Allure Java Commons for @Step annotations -->
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-java-commons</artifactId>
+            <version>${allure.version}</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- AspectJ for Allure -->
         <dependency>
             <groupId>org.aspectj</groupId>
@@ -69,21 +77,6 @@
             <artifactId>rest-assured</artifactId>
             <version>${rest-assured.version}</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.30</version>
-            <scope>provided</scope>
-        </dependency>
-
-        <!-- Source: https://mvnrepository.com/artifact/io.qameta.allure/allure-java-commons -->
-        <dependency>
-            <groupId>io.qameta.allure</groupId>
-            <artifactId>allure-java-commons</artifactId>
-            <version>2.21.0</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- Gson for JSON -->
@@ -101,6 +94,14 @@
             <version>${javafaker.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Lombok for models -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -114,6 +115,13 @@
                     <source>${maven.compiler.source}</source>
                     <target>${maven.compiler.target}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>1.18.30</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
 
@@ -126,7 +134,7 @@
                     <testFailureIgnore>false</testFailureIgnore>
                     <argLine>
                         -javaagent:"${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar"
-                        -Dallure.results.directory=${project.build.directory}/allure-results
+                        -Dallure.results.directory=${basedir}/allure-results  <!-- ✅ Изменили -->
                     </argLine>
                     <properties>
                         <property>
@@ -137,7 +145,7 @@
                     <systemProperties>
                         <property>
                             <name>allure.results.directory</name>
-                            <value>${project.build.directory}/allure-results</value>
+                            <value>${basedir}/allure-results</value>  <!-- ✅ Изменили -->
                         </property>
                     </systemProperties>
                 </configuration>
@@ -150,8 +158,8 @@
                 <version>2.12.0</version>
                 <configuration>
                     <reportVersion>${allure.version}</reportVersion>
-                    <resultsDirectory>${project.build.directory}/allure-results</resultsDirectory>
-                    <reportDirectory>${project.build.directory}/site/allure-maven-plugin</reportDirectory>
+                    <resultsDirectory>${basedir}/allure-results</resultsDirectory>  <!-- ✅ Изменили -->
+                    <reportDirectory>${basedir}/allure-report</reportDirectory>      <!-- ✅ Изменили -->
                 </configuration>
             </plugin>
         </plugins>

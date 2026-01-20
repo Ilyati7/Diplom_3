@@ -16,8 +16,14 @@ public class BaseTest {
         System.out.println("Запуск теста...");
         driver = WebDriverFactory.createDriver();
         baseUrl = ConfigReader.getBaseUrl();
+        System.out.println("Base URL: " + baseUrl);
+
+        // Увеличиваем таймауты для стабильности
+        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(15));
+        driver.manage().timeouts().pageLoadTimeout(Duration.ofSeconds(30));
+        driver.manage().timeouts().scriptTimeout(Duration.ofSeconds(15));
+
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(Duration.ofSeconds(10));
     }
 
     @After

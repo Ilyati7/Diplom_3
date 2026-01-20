@@ -41,7 +41,6 @@ public class BasePage {
         try {
             driver.findElement(locator).click();
         } catch (ElementClickInterceptedException e) {
-            // Альтернативный способ клика через JavaScript
             WebElement element = driver.findElement(locator);
             ((JavascriptExecutor) driver).executeScript("arguments[0].click();", element);
         }
@@ -56,6 +55,7 @@ public class BasePage {
     }
 
     @Step("Получение текста элемента: {locator}")
+    @SuppressWarnings("unused")
     protected String getElementText(By locator) {
         waitForElementVisible(locator);
         return driver.findElement(locator).getText();
@@ -71,6 +71,7 @@ public class BasePage {
         }
     }
 
+    @SuppressWarnings("unused")
     public String getCurrentUrl() {
         return driver.getCurrentUrl();
     }

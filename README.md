@@ -124,7 +124,3 @@ target/ ├── allure-results/ # Сырые данные Allure └── sur
 ### Как сгенерировать локально:
 ```bash
 mvn clean test allure:serve
-
-
-
-

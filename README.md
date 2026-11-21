@@ -1,3 +1,7 @@
+> 📁 Это часть моего QA-портфолио. Общий обзор всех проектов: qa-portfolio/automation
+>
+> Серия состоит из трёх дипломных проектов: юнит-тесты (Diplom_1), API-тесты (этот репозиторий) и UI-тесты (Diplom_3).
+
 🍔 Burger UI Autotests Проект автоматизированного тестирования UI для Stellar Burgers с использованием Selenium WebDriver, JUnit 4 и Allure Reports.
 
 

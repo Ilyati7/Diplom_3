@@ -2,7 +2,7 @@
 >
 > Серия состоит из трёх дипломных проектов: юнит-тесты ([Diplom_1](https://github.com/Ilyati7/Diplom_1)), API-тесты ([Diplom_2](https://github.com/Ilyati7/Diplom_2)) и UI-тесты (этот репозиторий).
 
-🍔 Burger UI Autotests Проект автоматизированного тестирования UI для Stellar Burgers с использованием Selenium WebDriver, JUnit 4 и Allure Reports.
+# 🍔 Burger UI Autotests Проект автоматизированного тестирования UI для Stellar Burgers с использованием Selenium WebDriver, JUnit 4 и Allure Reports.
 
 
 📋 Оглавление Технологии
